@@ -306,11 +306,13 @@ end
 
 local png_init = function(file_name, mode)
 
-  local fp = ffi.gc(ffi.C.fopen(file_name, mode), ffi.C.fclose)
-  if fp == NULL then 
+  local rawpointer = ffi.C.fopen(file_name, mode)
+
+  if rawpointer == NULL then 
     local errorstring = "[png_init] " .. file_name .. " could not be opened, mode: " .. mode
     error(errorstring)
   end
+  local fp = ffi.gc(rawpointer, ffi.C.fclose)
   local h = handle_wrapper(NULL, NULL, NULL)
 
   if mode:find('r') then
